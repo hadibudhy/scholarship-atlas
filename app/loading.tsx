@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="loading-page site-shell" aria-label="Loading scholarship directory"><div className="skeleton line short" /><div className="skeleton title" /><div className="skeleton line" /><div className="skeleton filters" /><div className="skeleton row" /><div className="skeleton row" /><div className="skeleton row" /></main>; }

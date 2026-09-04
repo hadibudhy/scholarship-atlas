@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="loading-page site-shell" aria-label="Loading opportunity"><div className="skeleton line short" /><div className="skeleton title" /><div className="skeleton line" /><div className="skeleton facts" /><div className="skeleton row" /></main>; }
