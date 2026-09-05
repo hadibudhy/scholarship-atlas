@@ -5,11 +5,13 @@ process.env.VITE_GA_MEASUREMENT_ID = 'G-TEST123456';
 
 const queued = [];
 Object.assign(globalThis, {
-  window: { location: { hostname: 'example.test', origin: 'https://example.test' }, dataLayer: queued },
+  window: { location: { hostname: 'example.test', origin: 'https://example.test', pathname: '/scholarship-atlas/directory/' }, dataLayer: queued },
   document: { head: { append: () => undefined }, createElement: () => ({}) },
 });
 
-const { loadAnalytics, trackEvent, trackPageView } = await import('../lib/analytics.ts');
+const { loadAnalytics, normalizedRoutePath, trackEvent, trackPageView } = await import('../lib/analytics.ts');
+assert.equal(normalizedRoutePath('/scholarship-atlas/directory/'), '/directory/');
+assert.equal(normalizedRoutePath('/directory/'), '/directory/');
 loadAnalytics();
 assert.equal(queued.length, 2, 'initialization must queue exactly js and config commands');
 trackPageView('/directory');

@@ -5,6 +5,7 @@ declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
+    __scholarshipAtlasInitialPagePath?: string;
   }
 }
 
@@ -13,6 +14,16 @@ const measurementId = configuredMeasurementId?.match(/\bG-[A-Z0-9]+\b/i)?.[0] ??
 const consentRequired = (typeof process !== 'undefined' ? process.env.VITE_ANALYTICS_REQUIRE_CONSENT : import.meta.env.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
 let consentGranted = !consentRequired;
 let initialized = false;
+
+export function normalizedRoutePath(path: string) {
+  return path.replace(/^\/scholarship-atlas(?=\/|$)/, '') || '/';
+}
+
+export function serverAnalyticsBootstrap() {
+  const id = process.env.VITE_GA_MEASUREMENT_ID?.match(/\bG-[A-Z0-9]+\b/i)?.[0] ?? '';
+  if (!id || process.env.VITE_ANALYTICS_REQUIRE_CONSENT === 'true') return null;
+  return { id, script: `window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag('js',new Date());window.gtag('config','${id}',{send_page_view:false});window.__scholarshipAtlasInitialPagePath=(window.location.pathname.replace(/^\\/scholarship-atlas(?=\\/|$)/,'')||'/');window.gtag('event','page_view',{page_location:window.location.origin+window.location.pathname,page_path:window.location.pathname,page_title:document.title,transport_type:'beacon'});` };
+}
 
 function canTrack() {
   return typeof window !== 'undefined'
@@ -38,6 +49,7 @@ export function setAnalyticsConsent(granted: boolean) {
 export function loadAnalytics() {
   if (!canTrack() || initialized) return;
   initialized = true;
+  if (window.gtag) return;
   window.dataLayer ??= [];
   window.gtag = (...args: unknown[]) => window.dataLayer?.push(args);
   gtag('js', new Date());
@@ -54,8 +66,8 @@ export function trackEvent(name: AnalyticsEvent, properties: AnalyticsProperties
   gtag('event', name, { ...properties, transport_type: 'beacon' });
 }
 
-export function trackPageView(path: string) {
+export function trackPageView(_path: string) {
   if (!canTrack()) return;
   loadAnalytics();
-  gtag('event', 'page_view', { page_location: `${window.location.origin}${path}`, page_path: path, transport_type: 'beacon' });
+  gtag('event', 'page_view', { page_location: `${window.location.origin}${window.location.pathname}`, page_path: window.location.pathname, transport_type: 'beacon' });
 }
