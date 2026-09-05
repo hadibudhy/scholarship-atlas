@@ -1,4 +1,4 @@
-import Link from 'next/link';
+const Link = 'a';
 import type { Opportunity } from '@/lib/library';
 
 export function CrawlableScholarshipIndex({ items, heading = 'All scholarship records' }: { items: Opportunity[]; heading?: string }) {

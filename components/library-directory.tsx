@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+const Link = 'a';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Opportunity } from '@/lib/library';
 import { trackEvent } from '@/lib/analytics';

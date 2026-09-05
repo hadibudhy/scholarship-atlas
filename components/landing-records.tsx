@@ -1,4 +1,4 @@
-import Link from 'next/link';
+const Link = 'a';
 import type { Opportunity } from '@/lib/library';
 import { displayDate, displayStipend, sentence } from '@/lib/display';
 import { latestDeadline } from '@/lib/library';

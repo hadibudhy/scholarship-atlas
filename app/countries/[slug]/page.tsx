@@ -1,4 +1,4 @@
-import Link from 'next/link';
+const Link = 'a';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { LandingRecords } from '@/components/landing-records';

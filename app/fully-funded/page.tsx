@@ -1,4 +1,4 @@
-import Link from 'next/link';
+const Link = 'a';
 import type { Metadata } from 'next';
 import { LandingRecords } from '@/components/landing-records';
 import { SiteFooter, SiteHeader } from '@/components/site-header';

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+const Link = 'a';
 
 export function SiteHeader() {
   return <header className="site-header"><div className="site-shell header-inner"><Link className="wordmark" href="/"><span className="wordmark-mark" aria-hidden="true">SA</span><span>Scholarship Atlas</span></Link><nav aria-label="Primary navigation"><Link href="/directory">Scholarship directory</Link><Link href="/fully-funded">Fully funded routes</Link><Link href="/about">Methodology and about</Link></nav></div></header>;
