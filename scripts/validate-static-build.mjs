@@ -45,6 +45,13 @@ for (const path of pages) {
   if (canonical && !canonical.startsWith(base)) errors.push(`${page} has non-canonical base URL: ${canonical}`);
   if (title) (titles.get(title) ?? titles.set(title, []).get(title)).push(page);
   if (description) (descriptions.get(description) ?? descriptions.set(description, []).get(description)).push(page);
+  for (const href of html.matchAll(/<a[^>]+href="([^"]+)"/g)) {
+    const targetUrl = href[1];
+    if (!targetUrl.startsWith('/scholarship-atlas/') || targetUrl.startsWith('/scholarship-atlas/_next/')) continue;
+    const targetPath = targetUrl.slice('/scholarship-atlas/'.length).split(/[?#]/)[0].replace(/\/$/, '');
+    const target = join(output, targetPath || '.', 'index.html');
+    if (!existsSync(target)) errors.push(`${page} links to missing internal page: ${targetUrl}`);
+  }
   for (const block of html.matchAll(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
     try { JSON.parse(block[1]); } catch { errors.push(`${page} has invalid JSON-LD`); }
   }
