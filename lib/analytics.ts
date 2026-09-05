@@ -23,8 +23,8 @@ function canTrack() {
 
 function gtag(...args: unknown[]) {
   window.dataLayer ??= [];
-  window.dataLayer.push(args);
-  window.gtag?.(...args);
+  if (window.gtag) window.gtag(...args);
+  else window.dataLayer.push(args);
 }
 
 export function setAnalyticsConsent(granted: boolean) {

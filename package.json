@@ -12,6 +12,7 @@
     "validate:data": "node scripts/validate-data.mjs",
     "test:static": "node scripts/validate-static-build.mjs",
     "test:crawl": "node scripts/crawl-static.mjs",
+    "test:analytics": "node --experimental-strip-types scripts/test-analytics.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "lint": "oxlint app components/crawlable-scholarship-index.tsx components/landing-records.tsx components/library-directory.tsx components/site-header.tsx lib scripts",

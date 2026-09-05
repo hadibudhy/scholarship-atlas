@@ -30,6 +30,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm run test:analytics
       - run: npm run validate:data
       - run: npm run build:pages
       - run: npm run test:crawl
