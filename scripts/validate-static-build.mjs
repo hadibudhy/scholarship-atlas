@@ -49,8 +49,8 @@ for (const path of pages) {
     try { JSON.parse(block[1]); } catch { errors.push(`${page} has invalid JSON-LD`); }
   }
 }
-for (const [title, paths] of titles) if (paths.length > 1 && paths.some((path) => path.startsWith('opportunities/'))) errors.push(`duplicate scholarship title: ${title}`);
-for (const [description, paths] of descriptions) if (paths.length > 1 && paths.some((path) => path.startsWith('opportunities/'))) errors.push(`duplicate scholarship description: ${description}`);
+for (const [title, paths] of titles) if (paths.length > 1 && paths.some((path) => path.replaceAll('\\', '/').startsWith('opportunities/'))) errors.push(`duplicate scholarship title: ${title}`);
+for (const [description, paths] of descriptions) if (paths.length > 1 && paths.some((path) => path.replaceAll('\\', '/').startsWith('opportunities/'))) errors.push(`duplicate scholarship description: ${description}`);
 
 const directory = readFileSync(join(output, 'directory', 'index.html'), 'utf8');
 const detailLinks = new Set([...directory.matchAll(/href="\/scholarship-atlas\/opportunities\/([^"#?]+)/g)].map((match) => match[1].replace(/\/$/, '')));
