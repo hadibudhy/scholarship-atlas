@@ -11,6 +11,8 @@
     "build:pages": "npm run validate:data && npm run build && node scripts/prepare-pages.mjs && npm run test:static",
     "validate:data": "node scripts/validate-data.mjs",
     "test:static": "node scripts/validate-static-build.mjs",
+    "test:crawl": "node scripts/crawl-static.mjs",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "lint": "oxlint app components/crawlable-scholarship-index.tsx components/landing-records.tsx components/library-directory.tsx components/site-header.tsx lib scripts",
     "format": "oxfmt"
