@@ -45,7 +45,11 @@ export function opportunitiesForCountry(country: string) {
   return opportunities.filter((record) => record.provider_country === country);
 }
 
-export function formatLabel(value?: string | null) { return value ? value.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()) : 'Unknown'; }
+export function formatLabel(value?: string | null) {
+  if (!value) return 'Unknown';
+  const normalized = value.replaceAll('_', ' ').replace(/\s+/g, ' ').trim().toLocaleLowerCase();
+  return normalized.replace(/\b\w/g, (letter) => letter.toLocaleUpperCase()).replace(/\b(ai|eu|eea|uk|us|ielts|toefl|phd|msc)\b/gi, (word) => word.toLocaleUpperCase());
+}
 export function latestDeadline(record: Opportunity) { const dates = (record.cycles ?? []).map((cycle) => cycle.deadline).filter((value): value is string => Boolean(value && /^\d{4}-\d{2}-\d{2}/.test(value))); return dates.sort()[0] ?? null; }
 export function sortedOpportunities(items: Opportunity[]) { return [...items].sort((a, b) => { const score = (record: Opportunity) => (record.verification_status === 'VERIFIED' ? 0 : 1) + (record.funding_classification === 'FULLY_FUNDED' ? 0 : record.funding_classification === 'NEAR_FULLY_FUNDED' ? 1 : 2); return score(a) - score(b) || a.name.localeCompare(b.name); }); }
 export function textForSearch(record: Opportunity) { return [record.name, record.provider_name, record.provider_country, record.opportunity_type, record.summary, ...(record.programs?.flatMap((program) => [program.name, ...(program.field_tags ?? [])]) ?? [])].filter(Boolean).join(' ').toLocaleLowerCase(); }
