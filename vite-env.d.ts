@@ -7,3 +7,5 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare const __SCHOLARSHIP_ATLAS_GA_MEASUREMENT_ID__: string;

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV = 'production';
-process.env.VITE_GA_MEASUREMENT_ID = 'G-TEST123456';
 
 const queued = [];
 Object.assign(globalThis, {
+  __SCHOLARSHIP_ATLAS_GA_MEASUREMENT_ID__: 'G-TEST123456',
   window: { location: { hostname: 'example.test', origin: 'https://example.test', pathname: '/scholarship-atlas/directory/' }, dataLayer: queued },
   document: { head: { append: () => undefined }, createElement: () => ({}) },
 });
