@@ -5,6 +5,7 @@ import { formatLabel, latestDeadline, opportunities, type Opportunity, type Prog
 import { displayDate, displayReferences, displayStatus, displayStipend, displayTuition, sentence } from '@/lib/display';
 
 export function generateStaticParams() { return opportunities.map((record) => ({ id: record.opportunity_id })); }
+export const dynamicParams = false;
 export function generateMetadata({ params }: { params: { id: string } }) { const record = opportunities.find((item) => item.opportunity_id === params.id); return record ? { title: `${record.name} | Scholarship Atlas`, description: record.summary } : {}; }
 
 export default function OpportunityPage({ params }: { params: { id: string } }) {
