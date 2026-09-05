@@ -22,6 +22,7 @@ const output = 'dist/client';
 const base = 'https://hadibudhy.github.io/scholarship-atlas';
 const library = JSON.parse(readFileSync('data/scholarship_library.json', 'utf8'));
 const publicRecords = library.opportunities.filter((record) => !['REJECTED_INVALID', 'STALE'].includes(record.verification_status));
+const excludedRecords = library.opportunities.filter((record) => ['REJECTED_INVALID', 'STALE'].includes(record.verification_status));
 const pages = [];
 function collect(dir) {
   for (const entry of readdirSync(dir)) {
@@ -75,6 +76,11 @@ for (const url of sitemapUrls) {
   const suffix = url.slice(base.length).replace(/^\//, '').replace(/\/$/, '');
   const target = join(output, suffix || '.', 'index.html');
   if (!existsSync(target)) errors.push(`sitemap URL has no static page: ${url}`);
+}
+for (const record of excludedRecords) {
+  const url = `${base}/opportunities/${record.opportunity_id}/`;
+  if (sitemapUrls.includes(url)) errors.push(`excluded record leaked into sitemap: ${record.opportunity_id}`);
+  if (existsSync(join(output, 'opportunities', record.opportunity_id, 'index.html'))) errors.push(`excluded record has a public page: ${record.opportunity_id}`);
 }
 
 if (errors.length) throw new Error(`Static SEO validation failed:\n${errors.join('\n')}`);
