@@ -21,6 +21,30 @@ export const fields = [...new Set(opportunities.flatMap((record) => record.progr
 export const fundingClasses = [...new Set(opportunities.map((record) => record.funding_classification).filter(isString))].sort(alpha);
 export const currentStatuses = [...new Set(opportunities.map((record) => record.current_status).filter(isString))].sort(alpha);
 
+export const siteUrl = 'https://hadibudhy.github.io/scholarship-atlas';
+
+export function slugFor(value: string) {
+  return value.toLocaleLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+export const fieldLandingPages = [
+  { slug: 'artificial-intelligence', label: 'Artificial Intelligence', field: 'AI', description: 'Official-source funding routes for Master’s and PhD study in artificial intelligence, machine learning and related research.' },
+  { slug: 'data-science', label: 'Data Science', field: 'DATA_SCIENCE', description: 'Official-source funding routes for Master’s and PhD study in data science, analytics and data-driven research.' },
+];
+
+export const countryLandingPages = [
+  { slug: 'germany', label: 'Germany', country: 'Germany', description: 'Official-source Data and AI graduate funding routes based in Germany.' },
+  { slug: 'united-kingdom', label: 'United Kingdom', country: 'United Kingdom', description: 'Official-source Data and AI graduate funding routes based in the United Kingdom.' },
+];
+
+export function opportunitiesForField(field: string) {
+  return opportunities.filter((record) => record.programs?.some((program) => program.field_tags?.includes(field)));
+}
+
+export function opportunitiesForCountry(country: string) {
+  return opportunities.filter((record) => record.provider_country === country);
+}
+
 export function formatLabel(value?: string | null) { return value ? value.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()) : 'Unknown'; }
 export function latestDeadline(record: Opportunity) { const dates = (record.cycles ?? []).map((cycle) => cycle.deadline).filter((value): value is string => Boolean(value && /^\d{4}-\d{2}-\d{2}/.test(value))); return dates.sort()[0] ?? null; }
 export function sortedOpportunities(items: Opportunity[]) { return [...items].sort((a, b) => { const score = (record: Opportunity) => (record.verification_status === 'VERIFIED' ? 0 : 1) + (record.funding_classification === 'FULLY_FUNDED' ? 0 : record.funding_classification === 'NEAR_FULLY_FUNDED' ? 1 : 2); return score(a) - score(b) || a.name.localeCompare(b.name); }); }

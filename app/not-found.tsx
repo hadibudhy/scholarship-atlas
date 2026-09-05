@@ -1,6 +1,13 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { SiteFooter, SiteHeader } from '@/components/site-header';
 
+export const metadata: Metadata = {
+  title: 'Page Not Found',
+  description: 'The requested Scholarship Atlas page could not be found.',
+  robots: { index: false, follow: true },
+};
+
 export default function NotFound() {
-  return <main><SiteHeader /><section className="error-page site-shell"><p className="kicker">Page not found</p><h1>This scholarship page is not available.</h1><p>The link may be outdated, or the record may no longer be part of the public library.</p><Link className="text-link" href="/directory">Browse the scholarship directory</Link></section><SiteFooter /></main>;
+  return <main><SiteHeader /><article className="legal-page site-shell"><p className="kicker">404</p><h1>That page is not in the atlas.</h1><p>It may have moved, or the link may be incomplete. Browse the directory to find a current scholarship record.</p><Link className="back-link" href="/directory">Browse the scholarship directory</Link></article><SiteFooter /></main>;
 }

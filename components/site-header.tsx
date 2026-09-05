@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export function SiteHeader() {
-  return <header className="site-header"><div className="site-shell header-inner"><Link className="wordmark" href="/"><span className="wordmark-mark" aria-hidden="true">SA</span><span>Scholarship Atlas</span></Link><nav aria-label="Primary navigation"><Link href="/directory">Directory</Link><Link href="/#method">How it works</Link><Link href="/about">About</Link></nav></div></header>;
+  return <header className="site-header"><div className="site-shell header-inner"><Link className="wordmark" href="/"><span className="wordmark-mark" aria-hidden="true">SA</span><span>Scholarship Atlas</span></Link><nav aria-label="Primary navigation"><Link href="/directory">Scholarship directory</Link><Link href="/fully-funded">Fully funded routes</Link><Link href="/about">Methodology and about</Link></nav></div></header>;
 }
 
 export function SiteFooter() {

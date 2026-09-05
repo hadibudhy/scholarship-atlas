@@ -12,7 +12,7 @@
     "validate:data": "node scripts/validate-data.mjs",
     "test:static": "node scripts/validate-static-build.mjs",
     "preview": "vite preview",
-    "lint": "oxlint app components/library-directory.tsx components/site-header.tsx lib scripts",
+    "lint": "oxlint app components/crawlable-scholarship-index.tsx components/landing-records.tsx components/library-directory.tsx components/site-header.tsx lib scripts",
     "format": "oxfmt"
   },
   "dependencies": {

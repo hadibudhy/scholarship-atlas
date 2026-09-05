@@ -13,7 +13,9 @@ function movePage(relative) {
   renameSync(source, join(targetDirectory, 'index.html'));
 }
 
-for (const page of ['about', 'directory', 'privacy', 'terms']) movePage(page);
+for (const page of ['about', 'directory', 'privacy', 'terms', 'fully-funded']) movePage(page);
+for (const page of ['artificial-intelligence', 'data-science']) movePage(join('fields', page));
+for (const page of ['germany', 'united-kingdom']) movePage(join('countries', page));
 for (const record of records) movePage(join('opportunities', record.opportunity_id));
 
 function rewriteHtml(directory) {
@@ -34,9 +36,17 @@ const sitemapUrls = [
   `${baseUrl}/`,
   `${baseUrl}/directory/`,
   `${baseUrl}/about/`,
+  `${baseUrl}/fully-funded/`,
+  `${baseUrl}/privacy/`,
+  `${baseUrl}/terms/`,
+  `${baseUrl}/fields/artificial-intelligence/`,
+  `${baseUrl}/fields/data-science/`,
+  `${baseUrl}/countries/germany/`,
+  `${baseUrl}/countries/united-kingdom/`,
   ...records.map((record) => `${baseUrl}/opportunities/${record.opportunity_id}/`),
 ];
-writeFileSync(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapUrls.map((url) => `<url><loc>${xml(url)}</loc></url>`).join('')}</urlset>`);
-writeFileSync(join(output, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/sitemap.xml\n`);
+writeFileSync(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapUrls.map((url) => `<url><loc>${xml(url)}</loc><lastmod>2026-09-05</lastmod></url>`).join('')}</urlset>`);
+writeFileSync(join(output, 'robots.txt'), `User-agent: *\nAllow: /\n\nUser-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: ChatGPT-User\nAllow: /\n\nUser-agent: GPTBot\nDisallow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`);
+writeFileSync(join(output, 'llms.txt'), `# Scholarship Atlas\n\nScholarship Atlas is an official-source directory of graduate funding for Data, AI, machine learning and related fields.\n\n- Home: ${baseUrl}/\n- Directory: ${baseUrl}/directory/\n- Fully funded records: ${baseUrl}/fully-funded/\n- Methodology: ${baseUrl}/about/\n- Sitemap: ${baseUrl}/sitemap.xml\n\nEach public scholarship record has a permanent URL at ${baseUrl}/opportunities/{id}/ and includes provider, programme, funding, eligibility, documents, deadlines, verification date and official source links. Unverified details are labelled rather than inferred.\n`);
 writeFileSync(join(output, '.nojekyll'), '');
 console.log(`Prepared ${records.length} scholarship pages for GitHub Pages.`);
