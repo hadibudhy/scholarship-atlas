@@ -62,7 +62,7 @@ The root user-site URL, `https://hadibudhy.github.io/`, belongs to the separate 
 
 ## Analytics
 
-Scholarship Atlas supports optional Google Analytics 4. Add `GA_MEASUREMENT_ID` as a GitHub repository variable with a value such as `G-XXXXXXXXXX`; the Pages workflow exposes it to the static build as `NEXT_PUBLIC_GA_MEASUREMENT_ID`. The measurement ID is public configuration, not a secret. Localhost, test traffic, and builds without the value do not load GA4.
+Scholarship Atlas supports optional Google Analytics 4. Add `GA_MEASUREMENT_ID` as a GitHub repository variable with only the measurement ID as its value, such as `G-XXXXXXXXXX`; the Pages workflow exposes it to the static build as `VITE_GA_MEASUREMENT_ID`. The measurement ID is public configuration, not a secret. Localhost, test traffic, and builds without the value do not load GA4.
 
 If a consent banner is required for your audience, set the `ANALYTICS_REQUIRE_CONSENT` repository variable to `true` and have the banner call `setAnalyticsConsent(true)` from `lib/analytics.ts` after consent. Until then GA4 remains inactive.
 

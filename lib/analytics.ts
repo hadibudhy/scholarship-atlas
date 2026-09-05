@@ -8,14 +8,15 @@ declare global {
   }
 }
 
-const measurementId = typeof process === 'undefined' ? '' : process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? '';
-const consentRequired = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_ANALYTICS_REQUIRE_CONSENT === 'true';
+const configuredMeasurementId = typeof process !== 'undefined' ? process.env.VITE_GA_MEASUREMENT_ID : import.meta.env.VITE_GA_MEASUREMENT_ID;
+const measurementId = configuredMeasurementId?.match(/\bG-[A-Z0-9]+\b/i)?.[0] ?? '';
+const consentRequired = (typeof process !== 'undefined' ? process.env.VITE_ANALYTICS_REQUIRE_CONSENT : import.meta.env.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
 let consentGranted = !consentRequired;
 let initialized = false;
 
 function canTrack() {
   return typeof window !== 'undefined'
-    && process.env.NODE_ENV === 'production'
+    && (typeof process === 'undefined' ? import.meta.env.PROD : process.env.NODE_ENV === 'production')
     && Boolean(measurementId)
     && consentGranted
     && !['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV = 'production';
-process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = 'G-TEST123456';
+process.env.VITE_GA_MEASUREMENT_ID = 'G-TEST123456';
 
 const queued = [];
 Object.assign(globalThis, {
