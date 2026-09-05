@@ -9,8 +9,9 @@ declare global {
   }
 }
 
+const viteEnv = (import.meta as ImportMeta & { env?: ImportMetaEnv }).env;
 const measurementId = __SCHOLARSHIP_ATLAS_GA_MEASUREMENT_ID__;
-const consentRequired = (typeof process !== 'undefined' ? process.env.VITE_ANALYTICS_REQUIRE_CONSENT : import.meta.env.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
+const consentRequired = (typeof process !== 'undefined' ? process.env.VITE_ANALYTICS_REQUIRE_CONSENT : viteEnv?.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
 let consentGranted = !consentRequired;
 let initialized = false;
 
@@ -20,14 +21,14 @@ export function normalizedRoutePath(path: string) {
 
 export function serverAnalyticsBootstrap() {
   const id = __SCHOLARSHIP_ATLAS_GA_MEASUREMENT_ID__;
-  const requiresConsent = (process.env.VITE_ANALYTICS_REQUIRE_CONSENT ?? import.meta.env.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
+  const requiresConsent = (process.env.VITE_ANALYTICS_REQUIRE_CONSENT ?? viteEnv?.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
   if (!id || requiresConsent) return null;
   return { id, script: `window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag('js',new Date());window.gtag('config','${id}',{send_page_view:false});window.__scholarshipAtlasInitialPagePath=(window.location.pathname.replace(/^\\/scholarship-atlas(?=\\/|$)/,'')||'/');window.gtag('event','page_view',{page_location:window.location.origin+window.location.pathname,page_path:window.location.pathname,page_title:document.title,transport_type:'beacon'});` };
 }
 
 function canTrack() {
   return typeof window !== 'undefined'
-    && (typeof process === 'undefined' ? import.meta.env.PROD : process.env.NODE_ENV === 'production')
+    && (typeof process === 'undefined' ? viteEnv?.PROD : process.env.NODE_ENV === 'production')
     && Boolean(measurementId)
     && consentGranted
     && !['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);

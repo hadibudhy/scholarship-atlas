@@ -9,9 +9,13 @@ Object.assign(globalThis, {
   document: { head: { append: () => undefined }, createElement: () => ({}) },
 });
 
-const { loadAnalytics, normalizedRoutePath, trackEvent, trackPageView } = await import('../lib/analytics.ts');
+const { loadAnalytics, normalizedRoutePath, serverAnalyticsBootstrap, trackEvent, trackPageView } = await import('../lib/analytics.ts');
 assert.equal(normalizedRoutePath('/scholarship-atlas/directory/'), '/directory/');
 assert.equal(normalizedRoutePath('/directory/'), '/directory/');
+const bootstrap = serverAnalyticsBootstrap();
+assert.equal(bootstrap?.id, 'G-TEST123456');
+assert.match(bootstrap?.script ?? '', /__scholarshipAtlasInitialPagePath/);
+assert.match(bootstrap?.script ?? '', /gtag\('event','page_view'/);
 loadAnalytics();
 assert.equal(queued.length, 2, 'initialization must queue exactly js and config commands');
 trackPageView('/directory');
