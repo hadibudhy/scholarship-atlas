@@ -47,6 +47,7 @@ export function opportunitiesForCountry(country: string) {
 
 export function formatLabel(value?: string | null) {
   if (!value) return 'Unknown';
+  if (!value.includes('_') && value !== value.toLocaleUpperCase()) return value;
   const normalized = value.replaceAll('_', ' ').replace(/\s+/g, ' ').trim().toLocaleLowerCase();
   return normalized.replace(/\b\w/g, (letter) => letter.toLocaleUpperCase()).replace(/\b(ai|eu|eea|uk|us|ielts|toefl|phd|msc)\b/gi, (word) => word.toLocaleUpperCase());
 }
