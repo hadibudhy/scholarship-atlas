@@ -20,8 +20,9 @@ export function normalizedRoutePath(path: string) {
 }
 
 export function serverAnalyticsBootstrap() {
-  const id = process.env.VITE_GA_MEASUREMENT_ID?.match(/\bG-[A-Z0-9]+\b/i)?.[0] ?? '';
-  if (!id || process.env.VITE_ANALYTICS_REQUIRE_CONSENT === 'true') return null;
+  const id = (process.env.VITE_GA_MEASUREMENT_ID ?? import.meta.env.VITE_GA_MEASUREMENT_ID)?.match(/\bG-[A-Z0-9]+\b/i)?.[0] ?? '';
+  const requiresConsent = (process.env.VITE_ANALYTICS_REQUIRE_CONSENT ?? import.meta.env.VITE_ANALYTICS_REQUIRE_CONSENT) === 'true';
+  if (!id || requiresConsent) return null;
   return { id, script: `window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag('js',new Date());window.gtag('config','${id}',{send_page_view:false});window.__scholarshipAtlasInitialPagePath=(window.location.pathname.replace(/^\\/scholarship-atlas(?=\\/|$)/,'')||'/');window.gtag('event','page_view',{page_location:window.location.origin+window.location.pathname,page_path:window.location.pathname,page_title:document.title,transport_type:'beacon'});` };
 }
 
