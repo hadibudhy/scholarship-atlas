@@ -45,6 +45,17 @@ export function opportunitiesForCountry(country: string) {
   return opportunities.filter((record) => record.provider_country === country);
 }
 
+export function relatedOpportunities(record: Opportunity, limit = 3) {
+  const fields = new Set(record.programs?.flatMap((program) => program.field_tags ?? []) ?? []);
+  return opportunities
+    .filter((item) => item.opportunity_id !== record.opportunity_id)
+    .map((item) => ({ item, score: Number(item.provider_country === record.provider_country) + Number(item.programs?.some((program) => program.field_tags?.some((field) => fields.has(field)))) }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
+    .slice(0, limit)
+    .map(({ item }) => item);
+}
+
 export function formatLabel(value?: string | null) {
   if (!value) return 'Unknown';
   if (!value.includes('_') && value !== value.toLocaleUpperCase()) return value;

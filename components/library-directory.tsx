@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Opportunity } from '@/lib/library';
+import { trackEvent } from '@/lib/analytics';
 import { hasCoverage, hasNoApplicationFee, hasNoEnglishTestListed, hasNoRecommendationRequirement, latestDeadline, sortedOpportunities, textForSearch } from '@/lib/library';
 import { displayDate, displayStipend, sentence } from '@/lib/display';
 
@@ -20,6 +21,29 @@ export function LibraryDirectory({ items, countries, fields, fundingClasses, cur
     if (sort === 'verified') return [...result].sort((a, b) => (b.last_verified ?? '').localeCompare(a.last_verified ?? ''));
     return sortedOpportunities(result);
   }, [query, country, field, funding, status, type, recommendations, english, fee, coverage, sort, items]);
+  const previousValues = useRef<Record<string, string> | undefined>(undefined);
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  useEffect(() => {
+    if (!urlReady) return;
+    const current = { query, country, field, funding, status, type, recommendations, english, fee, coverage };
+    const previous = previousValues.current;
+    previousValues.current = current;
+    if (!previous) {
+      if (mode === 'directory') trackEvent('directory_page_view', { results_count: filtered.length, page_number: 1 });
+      return;
+    }
+    if (query !== previous.query && query) {
+      if (searchTimer.current) clearTimeout(searchTimer.current);
+      searchTimer.current = setTimeout(() => trackEvent('scholarship_search', { query_length: query.length, results_count: filtered.length }), 500);
+    }
+    const cleared = Object.entries(current).filter(([name, value]) => !value && Boolean(previous[name]));
+    if (cleared.length) {
+      trackEvent('filter_cleared', { active_filters_count: Object.values(previous).filter(Boolean).length });
+    }
+    for (const [name, value] of Object.entries(current)) if (name !== 'query' && value && value !== previous[name]) trackEvent('filter_applied', { filter_name: name, filter_value: value, results_count: filtered.length });
+    if (!filtered.length) trackEvent('no_results', { active_filters_count: Object.values(current).filter(Boolean).length });
+    return () => { if (searchTimer.current) clearTimeout(searchTimer.current); };
+  }, [urlReady, mode, query, country, field, funding, status, type, recommendations, english, fee, coverage, filtered.length]);
   const filters: Array<[FilterKey, string, (value: string) => void, string]> = [['country', country, setCountry, 'Country'], ['field', field, setField, 'Field'], ['funding', funding, setFunding, 'Funding'], ['status', status, setStatus, 'Status'], ['type', type, setType, 'Type'], ['recommendations', recommendations, setRecommendations, 'No recommendation letter'], ['english', english, setEnglish, 'English test not listed'], ['fee', fee, setFee, 'No application fee'], ['coverage', coverage, setCoverage, sentence(coverage)]];
   const activeFilters = filters.filter(([, value]) => value).length + (query ? 1 : 0);
   const reset = () => { setQuery(''); setCountry(''); setField(''); setFunding(''); setStatus(''); setType(''); setRecommendations(''); setEnglish(''); setFee(''); setCoverage(''); setSort('recommended'); };
